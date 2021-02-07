@@ -2,33 +2,35 @@
 package model
 
 import (
-	uuid "github.com/google/uuid"
 	"net"
 	"time"
+
+	"github.com/alextanhongpin/go-codegen/examples"
+	uuid "github.com/google/uuid"
 )
 
 type User struct {
 	allowPasswordChange    bool
-	birthdate              *time.Time
-	confirmationSentAt     *time.Time
-	confirmationToken      *string
-	confirmedAt            *time.Time
+	birthdate              time.Time
+	confirmationSentAt     time.Time
+	confirmationToken      string
+	confirmedAt            time.Time
 	country                string
 	createdAt              time.Time
-	currentSignInAt        *time.Time
+	currentSignInAt        time.Time
 	currentSignInIp        net.IP
 	currentSignInUserAgent string
-	deletedAt              *time.Time
-	email                  *string
+	deletedAt              time.Time
+	email                  string
 	emailVerified          bool
 	familyName             string
 	gender                 string
 	givenName              string
 	id                     uuid.UUID
-	lastSignInAt           *time.Time
+	lastSignInAt           time.Time
 	lastSignInIp           net.IP
 	lastSignInUserAgent    string
-	lastSignOutAt          *time.Time
+	lastSignOutAt          time.Time
 	lastSignOutIp          net.IP
 	lastSignOutUserAgent   string
 	locale                 string
@@ -43,8 +45,8 @@ type User struct {
 	preferredUsername      string
 	profile                string
 	region                 string
-	resetPasswordSentAt    *time.Time
-	resetPasswordToken     *string
+	resetPasswordSentAt    time.Time
+	resetPasswordToken     string
 	signInCount            int32
 	streetAddress          string
 	tags                   []string
@@ -54,8 +56,8 @@ type User struct {
 	zoneinfo               string
 }
 
-func NewUser(allowPasswordChange bool, birthdate *time.Time, confirmationSentAt *time.Time, confirmationToken *string, confirmedAt *time.Time, country string, createdAt time.Time, currentSignInAt *time.Time, currentSignInIp net.IP, currentSignInUserAgent string, deletedAt *time.Time, email *string, emailVerified bool, familyName string, gender string, givenName string, id uuid.UUID, lastSignInAt *time.Time, lastSignInIp net.IP, lastSignInUserAgent string, lastSignOutAt *time.Time, lastSignOutIp net.IP, lastSignOutUserAgent string, locale string, locality string, middleName string, name string, nickname string, phoneNumber string, phoneNumberVerified bool, picture string, postalCode string, preferredUsername string, profile string, region string, resetPasswordSentAt *time.Time, resetPasswordToken *string, signInCount int32, streetAddress string, tags []string, unconfirmedEmail string, updatedAt time.Time, website string, zoneinfo string) {
-	return &User{
+func NewUser(allowPasswordChange bool, birthdate time.Time, confirmationSentAt time.Time, confirmationToken string, confirmedAt time.Time, country string, createdAt time.Time, currentSignInAt time.Time, currentSignInIp net.IP, currentSignInUserAgent string, deletedAt time.Time, email string, emailVerified bool, familyName string, gender string, givenName string, id uuid.UUID, lastSignInAt time.Time, lastSignInIp net.IP, lastSignInUserAgent string, lastSignOutAt time.Time, lastSignOutIp net.IP, lastSignOutUserAgent string, locale string, locality string, middleName string, name string, nickname string, phoneNumber string, phoneNumberVerified bool, picture string, postalCode string, preferredUsername string, profile string, region string, resetPasswordSentAt time.Time, resetPasswordToken string, signInCount int32, streetAddress string, tags []string, unconfirmedEmail string, updatedAt time.Time, website string, zoneinfo string) User {
+	return User{
 		allowPasswordChange:    allowPasswordChange,
 		birthdate:              birthdate,
 		confirmationSentAt:     confirmationSentAt,
@@ -103,23 +105,116 @@ func NewUser(allowPasswordChange bool, birthdate *time.Time, confirmationSentAt 
 	}
 }
 
+func NewFromUser(u examples.User) User {
+	var email string
+	if u.Email.Valid {
+		email = u.Email.String
+	}
+	var birthdate time.Time
+	if u.Birthdate.Valid {
+		birthdate = u.Birthdate.Time
+	}
+	var confirmationToken string
+	if u.ConfirmationToken.Valid {
+		confirmationToken = u.ConfirmationToken.String
+	}
+	var confirmationSentAt time.Time
+	if u.ConfirmationSentAt.Valid {
+		confirmationSentAt = u.ConfirmationSentAt.Time
+	}
+	var confirmedAt time.Time
+	if u.ConfirmedAt.Valid {
+		confirmedAt = u.ConfirmedAt.Time
+	}
+	var resetPasswordToken string
+	if u.ResetPasswordToken.Valid {
+		resetPasswordToken = u.ResetPasswordToken.String
+	}
+	var resetPasswordSentAt time.Time
+	if u.ResetPasswordSentAt.Valid {
+		resetPasswordSentAt = u.ResetPasswordSentAt.Time
+	}
+	var currentSignInAt time.Time
+	if u.CurrentSignInAt.Valid {
+		currentSignInAt = u.CurrentSignInAt.Time
+	}
+	var lastSignInAt time.Time
+	if u.LastSignInAt.Valid {
+		lastSignInAt = u.LastSignInAt.Time
+	}
+	var lastSignOutAt time.Time
+	if u.LastSignOutAt.Valid {
+		lastSignOutAt = u.LastSignOutAt.Time
+	}
+	var deletedAt time.Time
+	if u.DeletedAt.Valid {
+		deletedAt = u.DeletedAt.Time
+	}
+	return User{
+		allowPasswordChange:    u.AllowPasswordChange,
+		birthdate:              birthdate,
+		confirmationSentAt:     confirmationSentAt,
+		confirmationToken:      confirmationToken,
+		confirmedAt:            confirmedAt,
+		country:                u.Country,
+		createdAt:              u.CreatedAt,
+		currentSignInAt:        currentSignInAt,
+		currentSignInIp:        u.CurrentSignInIp,
+		currentSignInUserAgent: u.CurrentSignInUserAgent,
+		deletedAt:              deletedAt,
+		email:                  email,
+		emailVerified:          u.EmailVerified,
+		familyName:             u.FamilyName,
+		gender:                 u.Gender,
+		givenName:              u.GivenName,
+		id:                     u.ID,
+		lastSignInAt:           lastSignInAt,
+		lastSignInIp:           u.LastSignInIp,
+		lastSignInUserAgent:    u.LastSignInUserAgent,
+		lastSignOutAt:          lastSignOutAt,
+		lastSignOutIp:          u.LastSignOutIp,
+		lastSignOutUserAgent:   u.LastSignOutUserAgent,
+		locale:                 u.Locale,
+		locality:               u.Locality,
+		middleName:             u.MiddleName,
+		name:                   u.Name,
+		nickname:               u.Nickname,
+		phoneNumber:            u.PhoneNumber,
+		phoneNumberVerified:    u.PhoneNumberVerified,
+		picture:                u.Picture,
+		postalCode:             u.PostalCode,
+		preferredUsername:      u.PreferredUsername,
+		profile:                u.Profile,
+		region:                 u.Region,
+		resetPasswordSentAt:    resetPasswordSentAt,
+		resetPasswordToken:     resetPasswordToken,
+		signInCount:            u.SignInCount,
+		streetAddress:          u.StreetAddress,
+		tags:                   u.Tags,
+		unconfirmedEmail:       u.UnconfirmedEmail,
+		updatedAt:              u.UpdatedAt,
+		website:                u.Website,
+		zoneinfo:               u.Zoneinfo,
+	}
+}
+
 func (u User) AllowPasswordChange() bool {
 	return u.allowPasswordChange
 }
 
-func (u User) Birthdate() *time.Time {
+func (u User) Birthdate() time.Time {
 	return u.birthdate
 }
 
-func (u User) ConfirmationSentAt() *time.Time {
+func (u User) ConfirmationSentAt() time.Time {
 	return u.confirmationSentAt
 }
 
-func (u User) ConfirmationToken() *string {
+func (u User) ConfirmationToken() string {
 	return u.confirmationToken
 }
 
-func (u User) ConfirmedAt() *time.Time {
+func (u User) ConfirmedAt() time.Time {
 	return u.confirmedAt
 }
 
@@ -131,7 +226,7 @@ func (u User) CreatedAt() time.Time {
 	return u.createdAt
 }
 
-func (u User) CurrentSignInAt() *time.Time {
+func (u User) CurrentSignInAt() time.Time {
 	return u.currentSignInAt
 }
 
@@ -143,11 +238,11 @@ func (u User) CurrentSignInUserAgent() string {
 	return u.currentSignInUserAgent
 }
 
-func (u User) DeletedAt() *time.Time {
+func (u User) DeletedAt() time.Time {
 	return u.deletedAt
 }
 
-func (u User) Email() *string {
+func (u User) Email() string {
 	return u.email
 }
 
@@ -171,7 +266,7 @@ func (u User) ID() uuid.UUID {
 	return u.id
 }
 
-func (u User) LastSignInAt() *time.Time {
+func (u User) LastSignInAt() time.Time {
 	return u.lastSignInAt
 }
 
@@ -183,7 +278,7 @@ func (u User) LastSignInUserAgent() string {
 	return u.lastSignInUserAgent
 }
 
-func (u User) LastSignOutAt() *time.Time {
+func (u User) LastSignOutAt() time.Time {
 	return u.lastSignOutAt
 }
 
@@ -243,11 +338,11 @@ func (u User) Region() string {
 	return u.region
 }
 
-func (u User) ResetPasswordSentAt() *time.Time {
+func (u User) ResetPasswordSentAt() time.Time {
 	return u.resetPasswordSentAt
 }
 
-func (u User) ResetPasswordToken() *string {
+func (u User) ResetPasswordToken() string {
 	return u.resetPasswordToken
 }
 

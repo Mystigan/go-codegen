@@ -62,6 +62,8 @@ func generate(structName string, structType *types.Struct, goPackage, goFile str
 		fieldType string
 	}
 	var fields []sortableCode
+	var lets []Code
+	letsMapper := make(map[string]bool)
 
 	// Build the struct fields.
 	for i := 0; i < structType.NumFields(); i++ {
@@ -91,12 +93,31 @@ func generate(structName string, structType *types.Struct, goPackage, goFile str
 				// NullTime, NullString ...
 				switch name := typeName.Name(); name {
 				case "NullTime":
-					code.Op("*").Qual("time", "Time")
-					fieldType = "*time.Time"
+					code.Qual("time", "Time")
+					fieldType = "time.Time"
+
+					// Handle initialization of sql NullTypes
+					// var confirmedAt time.Time
+					// if u.ConfirmedAt.Valid {
+					//  confirmedAt = u.confirmedAt.Time
+					// }
+					let := Var().Id(fieldName).Qual("time", "Time").Line()
+					let.If().Id("u").Dot(field.Name()).Dot("Valid").Block(
+						Id(fieldName).Op("=").Id("u").Dot(field.Name()).Dot(strings.Replace(name, "Null", "", -1)),
+					)
+					lets = append(lets, let)
+					letsMapper[fieldName] = true
 				default:
-					underlyingType := strings.ToLower(strings.Replace(name, "Null", "", -1))
-					code.Op("*").Id(underlyingType)
-					fieldType = "*" + underlyingType
+					underlyingType := strings.Replace(name, "Null", "", -1)
+					code.Id(strings.ToLower(underlyingType))
+					fieldType = strings.ToLower(underlyingType)
+
+					let := Var().Id(fieldName).Id(strings.ToLower(underlyingType)).Line()
+					let.If().Id("u").Dot(field.Name()).Dot("Valid").Block(
+						Id(fieldName).Op("=").Id("u").Dot(field.Name()).Dot(underlyingType),
+					)
+					lets = append(lets, let)
+					letsMapper[fieldName] = true
 				}
 			default:
 				// Qual import packages.
@@ -145,9 +166,34 @@ func generate(structName string, structType *types.Struct, goPackage, goFile str
 		dict[Id(name)] = Id(name)
 	}
 
+	mapperDict := Dict{}
+	for i := range fields {
+		field := fields[i]
+		name := field.fieldName
+		prev := field.vars.Name()
+		if letsMapper[name] {
+			mapperDict[Id(name)] = Id(name)
+		} else {
+			mapperDict[Id(name)] = Id("u").Dot(prev)
+		}
+	}
+
 	// Generate the constructor for that field.
-	f.Func().Id("New" + structName).Params(codes...).Block(
-		Return(Op("&").Id(structName).Values(dict)),
+	f.Func().
+		Id("New" + structName). // Function name.
+		Params(codes...).       // Args.
+		Id(structName).         // Return type.
+		Block(
+			Return(Id(structName).Values(dict)),
+		).Line()
+
+	// Generate the adapter for that field.
+	f.Func().
+		Id("NewFrom" + structName).
+		Params(Id("u").
+			Qual(os.Getenv("GOPACKAGE"), structName)).
+		Id(structName).Block(
+		append(lets, Return(Id(structName).Values(mapperDict)))...,
 	).Line()
 
 	// Generate getter methods.
