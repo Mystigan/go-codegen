@@ -109,6 +109,9 @@ func generate(structName string, structType *types.Struct, goPackage, goFile str
 					typeName.Name(),
 				}, ".")
 			}
+		case *types.Slice:
+			code.Id(v.String())
+			fieldType = v.String()
 		default:
 			return fmt.Errorf("struct field type not handled: %T", v)
 		}

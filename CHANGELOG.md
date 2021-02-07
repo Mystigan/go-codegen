@@ -16,3 +16,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - generate setter methods
 - generate constructor
 - add examples
+- add slice support

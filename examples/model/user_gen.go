@@ -47,13 +47,14 @@ type User struct {
 	resetPasswordToken     *string
 	signInCount            int32
 	streetAddress          string
+	tags                   []string
 	unconfirmedEmail       string
 	updatedAt              time.Time
 	website                string
 	zoneinfo               string
 }
 
-func NewUser(allowPasswordChange bool, birthdate *time.Time, confirmationSentAt *time.Time, confirmationToken *string, confirmedAt *time.Time, country string, createdAt time.Time, currentSignInAt *time.Time, currentSignInIp net.IP, currentSignInUserAgent string, deletedAt *time.Time, email *string, emailVerified bool, familyName string, gender string, givenName string, id uuid.UUID, lastSignInAt *time.Time, lastSignInIp net.IP, lastSignInUserAgent string, lastSignOutAt *time.Time, lastSignOutIp net.IP, lastSignOutUserAgent string, locale string, locality string, middleName string, name string, nickname string, phoneNumber string, phoneNumberVerified bool, picture string, postalCode string, preferredUsername string, profile string, region string, resetPasswordSentAt *time.Time, resetPasswordToken *string, signInCount int32, streetAddress string, unconfirmedEmail string, updatedAt time.Time, website string, zoneinfo string) {
+func NewUser(allowPasswordChange bool, birthdate *time.Time, confirmationSentAt *time.Time, confirmationToken *string, confirmedAt *time.Time, country string, createdAt time.Time, currentSignInAt *time.Time, currentSignInIp net.IP, currentSignInUserAgent string, deletedAt *time.Time, email *string, emailVerified bool, familyName string, gender string, givenName string, id uuid.UUID, lastSignInAt *time.Time, lastSignInIp net.IP, lastSignInUserAgent string, lastSignOutAt *time.Time, lastSignOutIp net.IP, lastSignOutUserAgent string, locale string, locality string, middleName string, name string, nickname string, phoneNumber string, phoneNumberVerified bool, picture string, postalCode string, preferredUsername string, profile string, region string, resetPasswordSentAt *time.Time, resetPasswordToken *string, signInCount int32, streetAddress string, tags []string, unconfirmedEmail string, updatedAt time.Time, website string, zoneinfo string) {
 	return &User{
 		allowPasswordChange:    allowPasswordChange,
 		birthdate:              birthdate,
@@ -94,6 +95,7 @@ func NewUser(allowPasswordChange bool, birthdate *time.Time, confirmationSentAt 
 		resetPasswordToken:     resetPasswordToken,
 		signInCount:            signInCount,
 		streetAddress:          streetAddress,
+		tags:                   tags,
 		unconfirmedEmail:       unconfirmedEmail,
 		updatedAt:              updatedAt,
 		website:                website,
@@ -255,6 +257,10 @@ func (u User) SignInCount() int32 {
 
 func (u User) StreetAddress() string {
 	return u.streetAddress
+}
+
+func (u User) Tags() []string {
+	return u.tags
 }
 
 func (u User) UnconfirmedEmail() string {
