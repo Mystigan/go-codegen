@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - make input path configurable
 - use factory
+- separate adapter generation
 
 
 ## [0.0.1] - 2021-02-07

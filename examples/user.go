@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-//go:generate go run ../main.go -type=User -pkg=model -out=./model/user.go
+//go:generate go run ../main.go -type=User -pkg=model -out=./model/user.go -adapter=./adapter/adapter.go
 type User struct {
 	ID                  uuid.UUID
 	Email               sql.NullString
