@@ -17,16 +17,17 @@ import (
 )
 
 func main() {
-	structName := flag.String("type", "", "the name of the struct to target")
-	pkgName := flag.String("pkg", os.Getenv("GOPACKAGE"), "the target package name, defaults to the file with go:generate comment")
-	out := flag.String("out", os.Getenv("GOFILE"), "the output directory")
-	flag.Parse()
-
 	path, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("failed to get package directory: %v", err)
 	}
-	pkg := loadPackage(path)
+	structName := flag.String("type", "", "the name of the struct to target")
+	pkgName := flag.String("pkg", os.Getenv("GOPACKAGE"), "the target package name, defaults to the file with go:generate comment")
+	out := flag.String("out", os.Getenv("GOFILE"), "the output directory")
+	in := flag.String("in", path, "the target file, e.g. github.com/yourusername/pkg")
+	flag.Parse()
+
+	pkg := loadPackage(*in)
 	obj := pkg.Types.Scope().Lookup(*structName)
 	if obj == nil {
 		log.Fatalf("struct %s not found", *structName)
@@ -45,7 +46,7 @@ func main() {
 
 	// Generate code.
 	if err := generate(*structName, structType, *pkgName, *out); err != nil {
-		panic(err)
+		log.Fatalf("generate failed: %s", err)
 	}
 }
 
@@ -165,16 +166,15 @@ func generate(structName string, structType *types.Struct, goPackage, goFile str
 		name := fields[i].fieldName
 		dict[Id(name)] = Id(name)
 	}
-
-	mapperDict := Dict{}
+	factory := make([]Code, len(fields))
 	for i := range fields {
 		field := fields[i]
 		name := field.fieldName
 		prev := field.vars.Name()
 		if letsMapper[name] {
-			mapperDict[Id(name)] = Id(name)
+			factory[i] = Id(name)
 		} else {
-			mapperDict[Id(name)] = Id("u").Dot(prev)
+			factory[i] = Id("u").Dot(prev)
 		}
 	}
 
@@ -193,7 +193,7 @@ func generate(structName string, structType *types.Struct, goPackage, goFile str
 		Params(Id("u").
 			Qual(os.Getenv("GOPACKAGE"), structName)).
 		Id(structName).Block(
-		append(lets, Return(Id(structName).Values(mapperDict)))...,
+		append(lets, Return(Id("New"+structName).Call(List(factory...))))...,
 	).Line()
 
 	// Generate getter methods.

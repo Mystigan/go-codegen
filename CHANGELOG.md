@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Fixed
 
+## [0.0.2] - 2021-02-08
+### Changed
+- make input path configurable
+- use factory
+
+
 ## [0.0.1] - 2021-02-07
 ### Added
 - generate setter methods

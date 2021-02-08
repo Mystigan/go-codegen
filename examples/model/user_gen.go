@@ -2,11 +2,10 @@
 package model
 
 import (
+	examples "examples"
+	uuid "github.com/google/uuid"
 	"net"
 	"time"
-
-	"github.com/alextanhongpin/go-codegen/examples"
-	uuid "github.com/google/uuid"
 )
 
 type User struct {
@@ -150,52 +149,7 @@ func NewFromUser(u examples.User) User {
 	if u.DeletedAt.Valid {
 		deletedAt = u.DeletedAt.Time
 	}
-	return User{
-		allowPasswordChange:    u.AllowPasswordChange,
-		birthdate:              birthdate,
-		confirmationSentAt:     confirmationSentAt,
-		confirmationToken:      confirmationToken,
-		confirmedAt:            confirmedAt,
-		country:                u.Country,
-		createdAt:              u.CreatedAt,
-		currentSignInAt:        currentSignInAt,
-		currentSignInIp:        u.CurrentSignInIp,
-		currentSignInUserAgent: u.CurrentSignInUserAgent,
-		deletedAt:              deletedAt,
-		email:                  email,
-		emailVerified:          u.EmailVerified,
-		familyName:             u.FamilyName,
-		gender:                 u.Gender,
-		givenName:              u.GivenName,
-		id:                     u.ID,
-		lastSignInAt:           lastSignInAt,
-		lastSignInIp:           u.LastSignInIp,
-		lastSignInUserAgent:    u.LastSignInUserAgent,
-		lastSignOutAt:          lastSignOutAt,
-		lastSignOutIp:          u.LastSignOutIp,
-		lastSignOutUserAgent:   u.LastSignOutUserAgent,
-		locale:                 u.Locale,
-		locality:               u.Locality,
-		middleName:             u.MiddleName,
-		name:                   u.Name,
-		nickname:               u.Nickname,
-		phoneNumber:            u.PhoneNumber,
-		phoneNumberVerified:    u.PhoneNumberVerified,
-		picture:                u.Picture,
-		postalCode:             u.PostalCode,
-		preferredUsername:      u.PreferredUsername,
-		profile:                u.Profile,
-		region:                 u.Region,
-		resetPasswordSentAt:    resetPasswordSentAt,
-		resetPasswordToken:     resetPasswordToken,
-		signInCount:            u.SignInCount,
-		streetAddress:          u.StreetAddress,
-		tags:                   u.Tags,
-		unconfirmedEmail:       u.UnconfirmedEmail,
-		updatedAt:              u.UpdatedAt,
-		website:                u.Website,
-		zoneinfo:               u.Zoneinfo,
-	}
+	return NewUser(u.AllowPasswordChange, birthdate, confirmationSentAt, confirmationToken, confirmedAt, u.Country, u.CreatedAt, currentSignInAt, u.CurrentSignInIp, u.CurrentSignInUserAgent, deletedAt, email, u.EmailVerified, u.FamilyName, u.Gender, u.GivenName, u.ID, lastSignInAt, u.LastSignInIp, u.LastSignInUserAgent, lastSignOutAt, u.LastSignOutIp, u.LastSignOutUserAgent, u.Locale, u.Locality, u.MiddleName, u.Name, u.Nickname, u.PhoneNumber, u.PhoneNumberVerified, u.Picture, u.PostalCode, u.PreferredUsername, u.Profile, u.Region, resetPasswordSentAt, resetPasswordToken, u.SignInCount, u.StreetAddress, u.Tags, u.UnconfirmedEmail, u.UpdatedAt, u.Website, u.Zoneinfo)
 }
 
 func (u User) AllowPasswordChange() bool {

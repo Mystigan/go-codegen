@@ -9,3 +9,4 @@ TODO:
 - exclude: fields to exclude
 - type: the struct type to target.
 - sort: sort by field name/field type, or preserve?
+- add adapter to map the values, but it should be as a separate utility
