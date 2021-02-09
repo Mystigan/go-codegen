@@ -2,10 +2,9 @@
 package adapter
 
 import (
-	"time"
-
 	examples "github.com/alextanhongpin/go-codegen/examples"
 	model "github.com/alextanhongpin/go-codegen/examples/model"
+	"time"
 )
 
 func NewUser(u examples.User) model.User {

@@ -2,10 +2,10 @@
 package model
 
 import (
+	examples "github.com/alextanhongpin/go-codegen/examples"
+	uuid "github.com/google/uuid"
 	"net"
 	"time"
-
-	uuid "github.com/google/uuid"
 )
 
 type User struct {
@@ -22,7 +22,7 @@ type User struct {
 	deletedAt              time.Time
 	email                  string
 	emailVerified          bool
-	familyName             string
+	familyName             examples.FamilyName
 	gender                 string
 	givenName              string
 	id                     uuid.UUID
@@ -55,7 +55,7 @@ type User struct {
 	zoneinfo               string
 }
 
-func NewUser(allowPasswordChange bool, birthdate time.Time, confirmationSentAt time.Time, confirmationToken string, confirmedAt time.Time, country string, createdAt time.Time, currentSignInAt time.Time, currentSignInIp net.IP, currentSignInUserAgent string, deletedAt time.Time, email string, emailVerified bool, familyName string, gender string, givenName string, id uuid.UUID, lastSignInAt time.Time, lastSignInIp net.IP, lastSignInUserAgent string, lastSignOutAt time.Time, lastSignOutIp net.IP, lastSignOutUserAgent string, locale string, locality string, middleName string, name string, nickname string, phoneNumber string, phoneNumberVerified bool, picture string, postalCode string, preferredUsername string, profile string, region string, resetPasswordSentAt time.Time, resetPasswordToken string, signInCount int32, streetAddress string, tags []string, unconfirmedEmail string, updatedAt time.Time, website string, zoneinfo string) User {
+func NewUser(allowPasswordChange bool, birthdate time.Time, confirmationSentAt time.Time, confirmationToken string, confirmedAt time.Time, country string, createdAt time.Time, currentSignInAt time.Time, currentSignInIp net.IP, currentSignInUserAgent string, deletedAt time.Time, email string, emailVerified bool, familyName examples.FamilyName, gender string, givenName string, id uuid.UUID, lastSignInAt time.Time, lastSignInIp net.IP, lastSignInUserAgent string, lastSignOutAt time.Time, lastSignOutIp net.IP, lastSignOutUserAgent string, locale string, locality string, middleName string, name string, nickname string, phoneNumber string, phoneNumberVerified bool, picture string, postalCode string, preferredUsername string, profile string, region string, resetPasswordSentAt time.Time, resetPasswordToken string, signInCount int32, streetAddress string, tags []string, unconfirmedEmail string, updatedAt time.Time, website string, zoneinfo string) User {
 	return User{
 		allowPasswordChange:    allowPasswordChange,
 		birthdate:              birthdate,
@@ -156,7 +156,7 @@ func (u User) EmailVerified() bool {
 	return u.emailVerified
 }
 
-func (u User) FamilyName() string {
+func (u User) FamilyName() examples.FamilyName {
 	return u.familyName
 }
 

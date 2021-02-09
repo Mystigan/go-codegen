@@ -8,15 +8,19 @@ import (
 	"github.com/google/uuid"
 )
 
-//go:generate go run ../main.go -type=User -pkg=model -out=./model/user.go -adapter=./adapter/adapter.go
+type Name = string
+type FamilyName string
+
+// go:generate go run ../main.go -type=User -out=./model/user.go -adapter=./adapter/adapter.go
+//go:generate go run ../main.go -type=User -out=./model -adapter=./adapter
 type User struct {
 	ID                  uuid.UUID
 	Email               sql.NullString
 	EmailVerified       bool
 	PhoneNumber         string
 	PhoneNumberVerified bool
-	Name                string
-	FamilyName          string
+	Name                Name
+	FamilyName          FamilyName
 	GivenName           string
 	MiddleName          string
 	Nickname            string
