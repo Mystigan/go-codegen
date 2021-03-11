@@ -172,13 +172,9 @@ func generate(structName string, structType *types.Struct, in, out, adapter stri
 		})
 	}
 
-	var sortable bool
-	sortable = true
-	if sortable {
-		sort.Slice(fields, func(i, j int) bool {
-			return fields[i].fieldPrivate < fields[j].fieldPrivate
-		})
-	}
+	sort.Slice(fields, func(i, j int) bool {
+		return fields[i].fieldPrivate < fields[j].fieldPrivate
+	})
 
 	codes := make([]Code, len(fields))
 	for i := range fields {
@@ -204,13 +200,13 @@ func generate(structName string, structType *types.Struct, in, out, adapter stri
 	}
 
 	// Generate the constructor for that field.
-	f.Func().
-		Id("New" + structName). // Function name.
-		Params(codes...).       // Args.
-		Id(structName).         // Return type.
-		Block(
-			Return(Id(structName).Values(dict)),
-		).Line()
+	//f.Func().
+	//Id("New" + structName). // Function name.
+	//Params(codes...).       // Args.
+	//Id(structName).         // Return type.
+	//Block(
+	//Return(Id(structName).Values(dict)),
+	//).Line()
 
 	if adapter != "" {
 		f := NewFile(packageName(adapter))
@@ -239,6 +235,48 @@ func generate(structName string, structType *types.Struct, in, out, adapter stri
 			Return(Id(structNameShort).Dot(field.fieldPrivate)),
 		).Line()
 	}
+
+	// Generate builder.
+	publicType := structName
+	privateType := lowerFirst(structName)
+	short := structNameShort
+
+	f.Type().Id(privateType + "BuilderValidator").Interface(
+		Id("Validate").Params(Id(privateType).Op("*").Id(publicType)).Id("error"),
+	)
+
+	f.Type().Id(publicType + "Builder").Struct(
+		Id(privateType).Op("*").Id(publicType),
+	)
+
+	f.Func().Id("New" + publicType + "Builder").Params().Op("*").Id(publicType + "Builder").Block(
+		Return(Op("&").Id(publicType + "Builder").Values(Dict{
+			Id(privateType): Id("new").Parens(Id(publicType)),
+		})),
+	)
+	for i := 0; i < len(fields); i += 3 {
+		field := fields[i]
+		fieldPublic, fieldPrivate, fieldType := field.fieldPublic, field.fieldPrivate, field.fieldType
+
+		f.Func().Params(
+			Id(short+"b").Op("*").Id(publicType+"Builder"),
+		).Id("With"+fieldPublic).Params(Id(fieldPrivate).Id(fieldType)).Op("*").Id(publicType+"Builder").Block(
+			Id(short+"b").Dot(privateType).Dot(fieldPrivate).Op("=").Id(fieldPrivate),
+			Return(Id(short+"b")),
+		)
+	}
+
+	f.Func().Params(
+		Id(short+"b").Op("*").Id(publicType+"Builder"),
+	).Id("Build").Params(Id("v").Id(privateType+"BuilderValidator")).Parens(List(Op("*").Id(publicType), Id("error"))).Block(
+		If(
+			Err().Op(":=").Id("v").Dot("Validate").Call(Id(short)),
+			Err().Op("!=").Nil(),
+		).Block(Return(List(Nil(), Err()))),
+		Id(short).Op(":=").Id(short+"b").Dot(privateType),
+		Id(short+"b").Dot(privateType).Op("=").Nil(),
+		Return(List(Id(short), Nil())),
+	)
 
 	return f.Save(out)
 }

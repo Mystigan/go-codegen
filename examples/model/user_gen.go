@@ -55,55 +55,6 @@ type User struct {
 	zoneinfo               string
 }
 
-func NewUser(allowPasswordChange bool, birthdate time.Time, confirmationSentAt time.Time, confirmationToken string, confirmedAt time.Time, country string, createdAt time.Time, currentSignInAt time.Time, currentSignInIp net.IP, currentSignInUserAgent string, deletedAt time.Time, email string, emailVerified bool, familyName examples.FamilyName, gender string, givenName string, id uuid.UUID, lastSignInAt time.Time, lastSignInIp net.IP, lastSignInUserAgent string, lastSignOutAt time.Time, lastSignOutIp net.IP, lastSignOutUserAgent string, locale string, locality string, middleName string, name string, nickname string, phoneNumber string, phoneNumberVerified bool, picture string, postalCode string, preferredUsername string, profile string, region string, resetPasswordSentAt time.Time, resetPasswordToken string, signInCount int32, streetAddress string, tags []string, unconfirmedEmail string, updatedAt time.Time, website string, zoneinfo string) User {
-	return User{
-		allowPasswordChange:    allowPasswordChange,
-		birthdate:              birthdate,
-		confirmationSentAt:     confirmationSentAt,
-		confirmationToken:      confirmationToken,
-		confirmedAt:            confirmedAt,
-		country:                country,
-		createdAt:              createdAt,
-		currentSignInAt:        currentSignInAt,
-		currentSignInIp:        currentSignInIp,
-		currentSignInUserAgent: currentSignInUserAgent,
-		deletedAt:              deletedAt,
-		email:                  email,
-		emailVerified:          emailVerified,
-		familyName:             familyName,
-		gender:                 gender,
-		givenName:              givenName,
-		id:                     id,
-		lastSignInAt:           lastSignInAt,
-		lastSignInIp:           lastSignInIp,
-		lastSignInUserAgent:    lastSignInUserAgent,
-		lastSignOutAt:          lastSignOutAt,
-		lastSignOutIp:          lastSignOutIp,
-		lastSignOutUserAgent:   lastSignOutUserAgent,
-		locale:                 locale,
-		locality:               locality,
-		middleName:             middleName,
-		name:                   name,
-		nickname:               nickname,
-		phoneNumber:            phoneNumber,
-		phoneNumberVerified:    phoneNumberVerified,
-		picture:                picture,
-		postalCode:             postalCode,
-		preferredUsername:      preferredUsername,
-		profile:                profile,
-		region:                 region,
-		resetPasswordSentAt:    resetPasswordSentAt,
-		resetPasswordToken:     resetPasswordToken,
-		signInCount:            signInCount,
-		streetAddress:          streetAddress,
-		tags:                   tags,
-		unconfirmedEmail:       unconfirmedEmail,
-		updatedAt:              updatedAt,
-		website:                website,
-		zoneinfo:               zoneinfo,
-	}
-}
-
 func (u User) AllowPasswordChange() bool {
 	return u.allowPasswordChange
 }
@@ -278,4 +229,83 @@ func (u User) Website() string {
 
 func (u User) Zoneinfo() string {
 	return u.zoneinfo
+}
+
+type userBuilderValidator interface {
+	Validate(user *User) error
+}
+type UserBuilder struct {
+	user *User
+}
+
+func NewUserBuilder() *UserBuilder {
+	return &UserBuilder{user: new(User)}
+}
+func (ub *UserBuilder) WithAllowPasswordChange(allowPasswordChange bool) *UserBuilder {
+	ub.user.allowPasswordChange = allowPasswordChange
+	return ub
+}
+func (ub *UserBuilder) WithConfirmationToken(confirmationToken string) *UserBuilder {
+	ub.user.confirmationToken = confirmationToken
+	return ub
+}
+func (ub *UserBuilder) WithCreatedAt(createdAt time.Time) *UserBuilder {
+	ub.user.createdAt = createdAt
+	return ub
+}
+func (ub *UserBuilder) WithCurrentSignInUserAgent(currentSignInUserAgent string) *UserBuilder {
+	ub.user.currentSignInUserAgent = currentSignInUserAgent
+	return ub
+}
+func (ub *UserBuilder) WithEmailVerified(emailVerified bool) *UserBuilder {
+	ub.user.emailVerified = emailVerified
+	return ub
+}
+func (ub *UserBuilder) WithGivenName(givenName string) *UserBuilder {
+	ub.user.givenName = givenName
+	return ub
+}
+func (ub *UserBuilder) WithLastSignInIp(lastSignInIp net.IP) *UserBuilder {
+	ub.user.lastSignInIp = lastSignInIp
+	return ub
+}
+func (ub *UserBuilder) WithLastSignOutIp(lastSignOutIp net.IP) *UserBuilder {
+	ub.user.lastSignOutIp = lastSignOutIp
+	return ub
+}
+func (ub *UserBuilder) WithLocality(locality string) *UserBuilder {
+	ub.user.locality = locality
+	return ub
+}
+func (ub *UserBuilder) WithNickname(nickname string) *UserBuilder {
+	ub.user.nickname = nickname
+	return ub
+}
+func (ub *UserBuilder) WithPicture(picture string) *UserBuilder {
+	ub.user.picture = picture
+	return ub
+}
+func (ub *UserBuilder) WithProfile(profile string) *UserBuilder {
+	ub.user.profile = profile
+	return ub
+}
+func (ub *UserBuilder) WithResetPasswordToken(resetPasswordToken string) *UserBuilder {
+	ub.user.resetPasswordToken = resetPasswordToken
+	return ub
+}
+func (ub *UserBuilder) WithTags(tags []string) *UserBuilder {
+	ub.user.tags = tags
+	return ub
+}
+func (ub *UserBuilder) WithWebsite(website string) *UserBuilder {
+	ub.user.website = website
+	return ub
+}
+func (ub *UserBuilder) Build(v userBuilderValidator) (*User, error) {
+	if err := v.Validate(u); err != nil {
+		return nil, err
+	}
+	u := ub.user
+	ub.user = nil
+	return u, nil
 }
