@@ -11,8 +11,8 @@ import (
 type Name = string
 type FamilyName string
 
-// go:generate go run ../main.go -type=User -out=./model/user.go -adapter=./adapter/adapter.go
-//go:generate go run ../main.go -type=User -out=./model -adapter=./adapter
+// go:generate go run ../main.go -type=User -out=./model/user.go
+//go:generate go run ../main.go -type=User -out=./model
 type User struct {
 	ID                  uuid.UUID
 	Email               sql.NullString

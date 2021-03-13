@@ -231,81 +231,294 @@ func (u User) Zoneinfo() string {
 	return u.zoneinfo
 }
 
-type userBuilderValidator interface {
+type userValidator interface {
 	Validate(user *User) error
 }
 type UserBuilder struct {
 	user *User
 }
 
-func NewUserBuilder() *UserBuilder {
-	return &UserBuilder{user: new(User)}
-}
-func (ub *UserBuilder) WithAllowPasswordChange(allowPasswordChange bool) *UserBuilder {
-	ub.user.allowPasswordChange = allowPasswordChange
-	return ub
-}
-func (ub *UserBuilder) WithConfirmationToken(confirmationToken string) *UserBuilder {
-	ub.user.confirmationToken = confirmationToken
-	return ub
-}
-func (ub *UserBuilder) WithCreatedAt(createdAt time.Time) *UserBuilder {
-	ub.user.createdAt = createdAt
-	return ub
-}
-func (ub *UserBuilder) WithCurrentSignInUserAgent(currentSignInUserAgent string) *UserBuilder {
-	ub.user.currentSignInUserAgent = currentSignInUserAgent
-	return ub
-}
-func (ub *UserBuilder) WithEmailVerified(emailVerified bool) *UserBuilder {
-	ub.user.emailVerified = emailVerified
-	return ub
-}
-func (ub *UserBuilder) WithGivenName(givenName string) *UserBuilder {
-	ub.user.givenName = givenName
-	return ub
-}
-func (ub *UserBuilder) WithLastSignInIp(lastSignInIp net.IP) *UserBuilder {
-	ub.user.lastSignInIp = lastSignInIp
-	return ub
-}
-func (ub *UserBuilder) WithLastSignOutIp(lastSignOutIp net.IP) *UserBuilder {
-	ub.user.lastSignOutIp = lastSignOutIp
-	return ub
-}
-func (ub *UserBuilder) WithLocality(locality string) *UserBuilder {
-	ub.user.locality = locality
-	return ub
-}
-func (ub *UserBuilder) WithNickname(nickname string) *UserBuilder {
-	ub.user.nickname = nickname
-	return ub
-}
-func (ub *UserBuilder) WithPicture(picture string) *UserBuilder {
-	ub.user.picture = picture
-	return ub
-}
-func (ub *UserBuilder) WithProfile(profile string) *UserBuilder {
-	ub.user.profile = profile
-	return ub
-}
-func (ub *UserBuilder) WithResetPasswordToken(resetPasswordToken string) *UserBuilder {
-	ub.user.resetPasswordToken = resetPasswordToken
-	return ub
-}
-func (ub *UserBuilder) WithTags(tags []string) *UserBuilder {
-	ub.user.tags = tags
-	return ub
-}
-func (ub *UserBuilder) WithWebsite(website string) *UserBuilder {
-	ub.user.website = website
-	return ub
-}
-func (ub *UserBuilder) Build(v userBuilderValidator) (*User, error) {
-	if err := v.Validate(u); err != nil {
+func (ub *UserBuilder) Build(v userValidator) (*User, error) {
+	if err := v.Validate(ub.user); err != nil {
 		return nil, err
 	}
 	u := ub.user
 	ub.user = nil
 	return u, nil
+}
+
+type UserBuilderOption func(u *UserBuilder) error
+
+func NewUserBuilder(opts ...UserBuilderOption) (*UserBuilder, error) {
+	ub := UserBuilder{user: new(User)}
+	for _, o := range opts {
+		if err := o(&ub); err != nil {
+			return nil, err
+		}
+	}
+	return &ub, nil
+}
+func WithUserAllowPasswordChange(allowPasswordChange bool) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.allowPasswordChange = allowPasswordChange
+		return nil
+	}
+}
+func WithUserBirthdate(birthdate time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.birthdate = birthdate
+		return nil
+	}
+}
+func WithUserConfirmationSentAt(confirmationSentAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.confirmationSentAt = confirmationSentAt
+		return nil
+	}
+}
+func WithUserConfirmationToken(confirmationToken string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.confirmationToken = confirmationToken
+		return nil
+	}
+}
+func WithUserConfirmedAt(confirmedAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.confirmedAt = confirmedAt
+		return nil
+	}
+}
+func WithUserCountry(country string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.country = country
+		return nil
+	}
+}
+func WithUserCreatedAt(createdAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.createdAt = createdAt
+		return nil
+	}
+}
+func WithUserCurrentSignInAt(currentSignInAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.currentSignInAt = currentSignInAt
+		return nil
+	}
+}
+func WithUserCurrentSignInIp(currentSignInIp net.IP) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.currentSignInIp = currentSignInIp
+		return nil
+	}
+}
+func WithUserCurrentSignInUserAgent(currentSignInUserAgent string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.currentSignInUserAgent = currentSignInUserAgent
+		return nil
+	}
+}
+func WithUserDeletedAt(deletedAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.deletedAt = deletedAt
+		return nil
+	}
+}
+func WithUserEmail(email string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.email = email
+		return nil
+	}
+}
+func WithUserEmailVerified(emailVerified bool) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.emailVerified = emailVerified
+		return nil
+	}
+}
+func WithUserFamilyName(familyName examples.FamilyName) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.familyName = familyName
+		return nil
+	}
+}
+func WithUserGender(gender string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.gender = gender
+		return nil
+	}
+}
+func WithUserGivenName(givenName string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.givenName = givenName
+		return nil
+	}
+}
+func WithUserID(id uuid.UUID) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.id = id
+		return nil
+	}
+}
+func WithUserLastSignInAt(lastSignInAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.lastSignInAt = lastSignInAt
+		return nil
+	}
+}
+func WithUserLastSignInIp(lastSignInIp net.IP) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.lastSignInIp = lastSignInIp
+		return nil
+	}
+}
+func WithUserLastSignInUserAgent(lastSignInUserAgent string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.lastSignInUserAgent = lastSignInUserAgent
+		return nil
+	}
+}
+func WithUserLastSignOutAt(lastSignOutAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.lastSignOutAt = lastSignOutAt
+		return nil
+	}
+}
+func WithUserLastSignOutIp(lastSignOutIp net.IP) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.lastSignOutIp = lastSignOutIp
+		return nil
+	}
+}
+func WithUserLastSignOutUserAgent(lastSignOutUserAgent string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.lastSignOutUserAgent = lastSignOutUserAgent
+		return nil
+	}
+}
+func WithUserLocale(locale string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.locale = locale
+		return nil
+	}
+}
+func WithUserLocality(locality string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.locality = locality
+		return nil
+	}
+}
+func WithUserMiddleName(middleName string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.middleName = middleName
+		return nil
+	}
+}
+func WithUserName(name string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.name = name
+		return nil
+	}
+}
+func WithUserNickname(nickname string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.nickname = nickname
+		return nil
+	}
+}
+func WithUserPhoneNumber(phoneNumber string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.phoneNumber = phoneNumber
+		return nil
+	}
+}
+func WithUserPhoneNumberVerified(phoneNumberVerified bool) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.phoneNumberVerified = phoneNumberVerified
+		return nil
+	}
+}
+func WithUserPicture(picture string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.picture = picture
+		return nil
+	}
+}
+func WithUserPostalCode(postalCode string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.postalCode = postalCode
+		return nil
+	}
+}
+func WithUserPreferredUsername(preferredUsername string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.preferredUsername = preferredUsername
+		return nil
+	}
+}
+func WithUserProfile(profile string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.profile = profile
+		return nil
+	}
+}
+func WithUserRegion(region string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.region = region
+		return nil
+	}
+}
+func WithUserResetPasswordSentAt(resetPasswordSentAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.resetPasswordSentAt = resetPasswordSentAt
+		return nil
+	}
+}
+func WithUserResetPasswordToken(resetPasswordToken string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.resetPasswordToken = resetPasswordToken
+		return nil
+	}
+}
+func WithUserSignInCount(signInCount int32) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.signInCount = signInCount
+		return nil
+	}
+}
+func WithUserStreetAddress(streetAddress string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.streetAddress = streetAddress
+		return nil
+	}
+}
+func WithUserTags(tags []string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.tags = tags
+		return nil
+	}
+}
+func WithUserUnconfirmedEmail(unconfirmedEmail string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.unconfirmedEmail = unconfirmedEmail
+		return nil
+	}
+}
+func WithUserUpdatedAt(updatedAt time.Time) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.updatedAt = updatedAt
+		return nil
+	}
+}
+func WithUserWebsite(website string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.website = website
+		return nil
+	}
+}
+func WithUserZoneinfo(zoneinfo string) UserBuilderOption {
+	return func(u *UserBuilder) error {
+		u.user.zoneinfo = zoneinfo
+		return nil
+	}
 }
